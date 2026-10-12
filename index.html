@@ -1,0 +1,368 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>The Transforming Principle</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap">
+<style>
+/* Layout: one reading column on lab-ledger paper; a four-step experiment timeline on top; one story beat on screen at a time. */
+:root{
+  --paper:#EDF2EC; --sheet:#F8FAF6; --ink:#15262A; --muted:#55686A; --rule:#C9D5CC;
+  --violet:#5A3E9B; --violet-soft:#E4DDF3; --on-accent:#FFFFFF;
+  --s35:#9C7400; --p32:#C8375F;
+  --display:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+  --body:"Literata",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0F1A1C; --sheet:#16252A; --ink:#E4ECE6; --muted:#93A6A4; --rule:#2B3D40;
+  --violet:#B7A2F0; --violet-soft:#2A2547; --on-accent:#14101F;
+  --s35:#E3B93A; --p32:#F0789A; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --paper:#0F1A1C; --sheet:#16252A; --ink:#E4ECE6; --muted:#93A6A4; --rule:#2B3D40;
+  --violet:#B7A2F0; --violet-soft:#2A2547; --on-accent:#14101F;
+  --s35:#E3B93A; --p32:#F0789A; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.6;
+  background-image:linear-gradient(color-mix(in srgb,var(--rule) 45%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--rule) 45%,transparent) 1px,transparent 1px);
+  background-size:28px 28px}
+.wrap{max-width:43rem;margin-inline:auto;padding-inline:20px;padding-block:20px 56px;display:flex;flex-direction:column;gap:20px}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.steps li{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);
+  border-top:3px solid var(--rule);padding-top:6px;min-width:0}
+.steps li b{display:block;font-weight:500;color:inherit}
+.steps li.done{border-color:var(--violet);color:var(--ink)}
+.steps li.now{border-color:var(--violet);color:var(--violet)}
+@media (max-width:480px){.steps{grid-template-columns:repeat(2,1fr)}}
+
+.stage{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:28px 26px;display:flex;flex-direction:column;gap:18px}
+@media (max-width:480px){.stage{padding:22px 16px}}
+.stage:focus{outline:none}
+.tag{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);margin:0}
+h1,h2{font-family:var(--display);font-weight:700;line-height:1.08;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(2.3rem,8vw,3.5rem)}
+h2{font-size:clamp(1.6rem,5.5vw,2.1rem)}
+p{margin:0}
+.note{font-size:.9rem;color:var(--muted)}
+.clock{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+
+.msg{font-family:var(--display);font-weight:500;font-size:1rem;line-height:1.45;padding:12px 14px;border-radius:14px;max-width:34rem;min-width:0}
+.msg small{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;opacity:.8}
+.msg.me{align-self:flex-end;background:var(--violet);color:var(--on-accent);border-bottom-right-radius:3px}
+.msg.ai{align-self:flex-start;background:var(--violet-soft);color:var(--ink);border-bottom-left-radius:3px}
+
+.choices{display:flex;flex-direction:column;gap:10px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+.choice{font-family:var(--display);font-weight:500;text-align:left;background:transparent;border:1.5px solid var(--ink);border-radius:4px;padding:12px 14px;line-height:1.35}
+.choice:hover{background:var(--violet-soft)}
+.go{font-family:var(--display);font-weight:700;align-self:flex-start;background:var(--violet);color:var(--on-accent);border:0;border-radius:4px;padding:12px 18px}
+.quiet{font-family:var(--mono);font-size:.8rem;background:transparent;border:0;padding:4px 0;color:var(--muted);text-decoration:underline;align-self:flex-start}
+.reply{border-left:3px solid var(--violet);padding-left:12px;font-style:italic}
+
+.mice{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.mice div{border:1px solid var(--rule);border-radius:4px;padding:10px 12px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mice span{font-family:var(--mono);font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.mice b{font-family:var(--display)}
+.mice .dies b{color:var(--p32)}
+.pair{display:flex;gap:10px;flex-wrap:wrap}
+.pair .choice{flex:1 1 8rem;text-align:center}
+
+.tbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.84rem;margin-top:8px}
+.tbl th{text-align:left;font-weight:500;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 6px;border-bottom:1.5px solid currentColor}
+.tbl td{padding:0;border-bottom:1px solid color-mix(in srgb,currentColor 25%,transparent)}
+.tbl td>span,.tbl .row{display:flex;justify-content:space-between;gap:10px;width:100%;padding:8px 6px;text-align:left}
+.tbl .row{background:transparent;border:0;font:inherit}
+.tbl .row:hover{background:color-mix(in srgb,var(--violet) 14%,transparent)}
+.tbl .hit{background:color-mix(in srgb,var(--p32) 22%,transparent)}
+
+.logic{font-family:var(--display);font-weight:500;line-height:2}
+select{font:inherit;font-family:var(--display);font-weight:700;color:var(--violet);background:var(--sheet);border:1.5px solid var(--violet);border-radius:4px;padding:2px 6px;max-width:100%}
+
+.bench{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center}
+@media (max-width:480px){.bench{grid-template-columns:1fr}.bench svg{max-width:110px;margin-inline:auto}}
+.bench svg{width:100%;height:auto;display:block}
+.labels{display:flex;flex-direction:column;gap:12px;min-width:0}
+.labels p{font-family:var(--mono);font-size:.8rem}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{font-family:var(--display);font-weight:500;background:transparent;border:1.5px solid var(--rule);border-radius:999px;padding:6px 14px}
+.seg button[aria-pressed="true"]{border-color:currentColor;background:var(--violet-soft)}
+.s35{color:var(--s35)} .p32{color:var(--p32)}
+.result{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.result div{border:1px dashed var(--rule);border-radius:4px;padding:10px 12px;min-width:0}
+.result span{display:block;font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.result b{font-family:var(--display)}
+.caps{display:flex;flex-direction:column;gap:8px}
+.caps label{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--rule);border-radius:4px;padding:10px 12px;cursor:pointer}
+.caps input,.checks input{margin-top:.4em;accent-color:var(--violet);flex:none}
+
+blockquote{margin:0;padding:14px 16px;background:var(--violet-soft);border-radius:4px;font-style:italic}
+textarea,input[type=text]{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--rule);border-radius:4px;padding:10px 12px;width:100%}
+textarea{min-height:9rem;resize:vertical}
+.checks{display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.checks label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>span{font-family:var(--mono);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.record{display:flex;flex-direction:column;gap:0;border-top:1.5px solid var(--ink)}
+.record div{display:grid;grid-template-columns:9.5rem 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.record dt{font-family:var(--display);font-weight:700}
+.record dd{margin:0;min-width:0}
+@media (max-width:480px){.record div{grid-template-columns:1fr;gap:2px}}
+.own{white-space:pre-wrap;overflow-wrap:anywhere;border-left:3px solid var(--violet);padding-left:12px}
+.fig{margin:0;display:flex;flex-direction:column;gap:6px}
+.fig svg{width:100%;height:auto;display:block;max-width:26rem;margin-inline:auto}
+.fig figcaption{font-size:.88rem;color:var(--muted)}
+svg text{font-family:var(--mono);font-size:11px;fill:var(--ink);stroke:none}
+svg text.b{font-family:var(--display);font-weight:700;font-size:14px}
+svg text.bad{fill:var(--p32)}
+.ln{stroke:var(--ink);stroke-width:1.6;fill:none}
+.ah{fill:var(--ink)}
+.mouse ellipse,.mouse circle{fill:var(--sheet);stroke:var(--ink);stroke-width:1.6}
+.mouse line{stroke:var(--ink);stroke-width:1.6}
+.mouse .dot{fill:var(--ink);stroke:none}
+.mouse.dead ellipse,.mouse.dead circle{fill:color-mix(in srgb,var(--p32) 32%,var(--sheet))}
+.dishc{fill:var(--paper);stroke:var(--ink);stroke-width:1.6}
+.cS{fill:var(--violet);stroke:color-mix(in srgb,var(--violet) 35%,transparent);stroke-width:3.5}
+.cR{fill:var(--muted)}
+.cK{fill:none;stroke:var(--violet);stroke-width:1.2;stroke-dasharray:2 2}
+.key{display:flex;flex-wrap:wrap;gap:4px 16px;font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+.key svg{width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px}
+.avrows{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.avrow{width:100%;background:var(--sheet);border:1.5px solid var(--rule);border-radius:4px}
+button.avrow:hover{border-color:var(--violet)}
+.avrow.hit{border-color:var(--p32);background:color-mix(in srgb,var(--p32) 14%,var(--sheet))}
+.avrow{display:flex;align-items:center;gap:10px;padding:6px 10px;text-align:left;font:inherit;color:var(--ink)}
+.avrow .tube{width:16px;flex:none}.avrow .avd{width:74px;flex:none}
+.avt{flex:1;min-width:0;display:flex;flex-direction:column;font-family:var(--mono);font-size:.84rem;line-height:1.35}
+.avt b{font-weight:500}.avt i{font-style:normal;color:var(--muted);font-size:.74rem}
+.yn{font-family:var(--display);font-size:.9rem;line-height:1.2;width:7.2em;flex:none}.yn.bad{color:var(--p32)}
+@media (max-width:480px){.avrow{flex-wrap:wrap}.avt{flex:1 1 70%}.yn{width:auto;flex:1 1 0}}
+.fig+.fig{margin-top:14px}
+.bot{width:18px;height:18px;display:inline-block;vertical-align:-4px;margin-right:6px}
+.meet{display:flex;gap:14px;align-items:center;background:var(--violet-soft);border-radius:14px;padding:14px 16px}
+.meet .bot{width:56px;height:56px;flex:none;margin:0}
+.meet p{font-family:var(--display);font-weight:500;font-size:1rem;line-height:1.45;min-width:0}
+details{border:1px solid var(--rule);border-radius:4px;padding:10px 12px}
+summary{font-family:var(--display);font-weight:700;cursor:pointer}
+details>div{display:flex;flex-direction:column;gap:18px;margin-top:14px}
+footer{font-family:var(--mono);font-size:.72rem;color:var(--muted);line-height:1.5}
+@media (prefers-reduced-motion:no-preference){.stage>*{animation:in .28s ease both}@keyframes in{from{transform:translateY(6px)}to{transform:none}}}
+</style>
+
+<div class="wrap">
+  <ol class="steps" id="steps" aria-label="Progress">
+    <li><b>1928</b>Griffith</li><li><b>1944</b>Avery</li><li><b>1952</b>Hershey–Chase</li><li><b>Tonight</b>Your answer</li>
+  </ol>
+  <main class="stage" id="stage" tabindex="-1" aria-live="polite"></main>
+  <footer>BIO50A · 1.5 Identifying the Substance of Genes · objectives 1.5.1–1.5.3 · AI integration: analysing historical experiments and evaluating evidence. Strand is the AI chatbot character in this story. Its replies are written in advance. <button class="quiet" id="reset" style="font-size:inherit;display:block;margin-top:6px">Start again (new student)</button></footer>
+</div>
+
+<script>
+var SKEY='transforming-principle-v2';
+var S={scene:'intro',log:{},b:{s:null,p:null,ps:null,pp:null},caps:[],ans:'',name:'',reflect:'',checks:[]};
+function save(){try{localStorage.setItem(SKEY,JSON.stringify(S))}catch(e){}}
+function load(){try{var d=JSON.parse(localStorage.getItem(SKEY));if(d&&d.scene&&d.log)S=Object.assign(S,d)}catch(e){}}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var $=function(q,el){return (el||document).querySelector(q)};
+var BOT='<svg class="bot" viewBox="0 0 40 40" aria-hidden="true"><line x1="20" y1="3" x2="20" y2="10" style="stroke:var(--violet);stroke-width:2.5"/><circle cx="20" cy="4" r="3" style="fill:var(--violet)"/><rect x="5" y="10" width="30" height="24" rx="8" style="fill:var(--violet)"/><rect x="1" y="18" width="4" height="8" rx="2" style="fill:var(--violet)"/><rect x="35" y="18" width="4" height="8" rx="2" style="fill:var(--violet)"/><circle cx="14" cy="20" r="3.5" style="fill:var(--on-accent)"/><circle cx="26" cy="20" r="3.5" style="fill:var(--on-accent)"/><path d="M14 28 h12" style="stroke:var(--on-accent);stroke-width:2.5;stroke-linecap:round"/></svg>';
+var me=function(t){return '<div class="msg me"><small>You</small>'+t+'</div>'};
+var ai=function(t){return '<div class="msg ai"><small>'+BOT+'Strand · AI chatbot</small>'+t+'</div>'};
+var ch=function(t){return '<button class="choice" data-go="'+t[0]+'" data-set="'+(t[1]||'')+'">'+t[2]+'</button>'};
+var go=function(id,label){return '<button class="go" data-go="'+id+'">'+label+'</button>'};
+var AH=function(x,y){return '<polygon class="ah" points="'+x+','+y+' '+(x-7)+','+(y-4)+' '+(x-7)+','+(y+4)+'"/>'};
+function mouse(x,y,dead){return '<g transform="translate('+x+','+y+')'+(dead?' scale(1,-1)':'')+'" class="mouse'+(dead?' dead':'')+'"><path d="M-20 0 q-14 2 -16 -10" class="ln"/><line x1="-8" y1="9" x2="-8" y2="16"/><line x1="8" y1="9" x2="8" y2="16"/><ellipse rx="20" ry="11"/><circle cx="19" cy="-12" r="4"/><circle cx="22" cy="-4" r="8"/>'+(dead?'<path d="M21 -7 l4 4 m0 -4 l-4 4" class="ln"/>':'<circle cx="25" cy="-5" r="1.3" class="dot"/>')+'</g>'}
+function colony(t,x,y){return t==='S'?'<circle class="cS" cx="'+x+'" cy="'+y+'" r="3.5"/>':t==='K'?'<circle class="cK" cx="'+x+'" cy="'+y+'" r="4.5"/>':'<rect class="cR" x="'+(x-3)+'" y="'+(y-3)+'" width="6" height="6" transform="rotate(45 '+x+' '+y+')"/>'}
+var MIX={S:'SSSSS',R:'RRRRR',K:'KKKKK',KR:'KRKRR',SR:'SRSRS'},POS=[[-9,-7],[8,-9],[0,1],[-10,8],[9,8]];
+function dish(x,y,kind){return '<circle class="dishc" cx="'+x+'" cy="'+y+'" r="20"/>'+POS.map(function(p,i){return colony(MIX[kind][i],x+p[0],y+p[1])}).join('')}
+var KEY='<p class="key"><span><svg viewBox="0 0 14 14">'+colony('S',7,7)+'</svg>live S (capsule)</span><span><svg viewBox="0 0 14 14">'+colony('R',7,7)+'</svg>live R</span><span><svg viewBox="0 0 14 14">'+colony('K',7,7)+'</svg>heat-killed S</span></p>';
+function grif(reveal){var c=[['Live S','S',1],['Live R','R',0],['Heat-killed S','K',0],['Killed S + live R','KR',1]];
+  var g=c.map(function(d,i){var cx=75+150*(i%2),t=170*Math.floor(i/2),hide=i===3&&!reveal;
+    return '<text x="'+cx+'" y="'+(t+16)+'" text-anchor="middle">'+(i+1)+' · '+d[0]+'</text>'+dish(cx,t+50,d[1])+
+      '<line class="ln" x1="'+cx+'" y1="'+(t+74)+'" x2="'+cx+'" y2="'+(t+88)+'"/><polygon class="ah" points="'+cx+','+(t+94)+' '+(cx-4)+','+(t+87)+' '+(cx+4)+','+(t+87)+'"/>'+
+      (hide?'<text class="b" x="'+cx+'" y="'+(t+124)+'" text-anchor="middle" style="font-size:30px">?</text>':mouse(cx-3,t+114,d[2])+'<text class="b'+(d[2]?' bad':'')+'" x="'+cx+'" y="'+(t+150)+'" text-anchor="middle">'+(d[2]?'Dies':'Lives')+'</text>')}).join('');
+  if(reveal)g+='<text x="225" y="337" text-anchor="middle">live S found inside</text>';
+  return '<figure class="fig"><svg viewBox="0 0 300 346" role="img" aria-label="Griffith\'s four injections: live S kills the mouse, live R does not, heat-killed S does not, heat-killed S mixed with live R '+(reveal?'kills the mouse':'has an unknown result')+'">'+g+'</svg>'+KEY+'</figure>'}
+function avRow(name,yes,i,click){var lab=name+' destroyed, then live R cells added: transformation '+(yes?'happened':'did not happen');
+  var inner='<svg class="tube" viewBox="8 4 22 42" aria-hidden="true"><path d="M13 22 v16 a6 6 0 0 0 12 0 v-16 z" style="fill:var(--violet);fill-opacity:.3"/><path class="ln" d="M12 8 v30 a7 7 0 0 0 14 0 v-30"/></svg>'+
+  '<span class="avt"><b>'+name+' destroyed</b><i>then live R cells added</i></span>'+
+  '<svg class="avd" viewBox="196 2 68 48" aria-hidden="true"><line class="ln" x1="200" y1="26" x2="208" y2="26"/>'+AH(215,26)+dish(240,26,yes?'SR':'R')+'</svg><b class="yn'+(yes?'':' bad')+'">'+(yes?'R cells transformed into S':'No transformation')+'</b>';
+  return click?'<button class="avrow" data-row="'+i+'" aria-label="'+lab+'">'+inner+'</button>':'<div class="avrow" role="img" aria-label="'+lab+'">'+inner+'</div>'}
+function table(rows,click){return '<p style="margin-top:8px">Did the harmless R cells turn into S cells?</p><div class="avrows" style="margin-top:4px">'+rows.map(function(r,i){return avRow(r[0],r[1]==='Yes',i,click)}).join('')+'</div><p class="key" style="margin-top:6px"><span><svg viewBox="0 0 14 14">'+colony('S',7,7)+'</svg>S colonies grew = R cells were transformed</span><span><svg viewBox="0 0 14 14">'+colony('R',7,7)+'</svg>only R colonies = no transformation</span></p>'}
+function hc(part,col,where,name){var cc=part==='coat'?col:'var(--muted)',dc=part==='dna'?col:'var(--muted)';
+  var coat=function(x,y,r){return '<g transform="translate('+x+','+y+') rotate('+r+')" style="stroke:'+cc+'" fill="none" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><polygon points="0,-14 8,-9 8,1 0,6 -8,1 -8,-9"/><line x1="0" y1="6" x2="0" y2="15"/><path d="M0 15 l-6 5 M0 15 l6 5"/></g>'};
+  var dna=function(x,y){return '<path d="M'+x+' '+y+' q7 3 0 6 q-7 3 2 7" style="stroke:'+dc+'" fill="none" stroke-width="2.2" stroke-linecap="round"/>'};
+  var cell=function(x){return '<rect class="dishc" x="'+x+'" y="62" width="70" height="34" rx="17"/>'};
+  return '<figure class="fig"><svg viewBox="0 0 334 112" role="img" aria-label="'+name+' phages: after blending and spinning, the radioactivity is '+(where==='liquid'?'in the liquid with the coats':'inside the bacteria in the pellet')+'">'+
+  '<text x="50" y="12" text-anchor="middle">1 Infect</text><text x="150" y="12" text-anchor="middle">2 Blend</text><text x="250" y="12" text-anchor="middle">3 Spin</text>'+
+  cell(15)+coat(50,41,0)+dna(48,30)+'<path d="M50 56 v14" style="stroke:'+dc+'" stroke-width="2.2" stroke-dasharray="2 3"/>'+
+  '<line class="ln" x1="92" y1="79" x2="103" y2="79"/>'+AH(110,79)+
+  cell(115)+dna(148,70)+coat(176,36,28)+
+  '<line class="ln" x1="192" y1="79" x2="213" y2="79"/>'+AH(220,79)+
+  '<rect x="237" y="30" width="26" height="46" style="fill:'+(where==='liquid'?col:'transparent')+';fill-opacity:.45"/>'+
+  '<path d="M237 78 v6 a13 13 0 0 0 26 0 v-6 z" style="fill:'+(where==='cells'?col:'var(--muted)')+';fill-opacity:'+(where==='cells'?.8:.3)+'"/>'+
+  '<path class="ln" d="M236 20 v64 a14 14 0 0 0 28 0 v-64"/>'+
+  '<text x="270" y="56">liquid</text><text x="270" y="92">bacteria</text></svg>'+
+  '<figcaption><strong style="color:'+col+'">'+name+'</strong> ended up '+(where==='liquid'?'in the liquid, with the empty coats.':'inside the bacteria.')+'</figcaption></figure>'}
+var AVERY=[['Protein','Yes'],['Lipids and carbohydrates','Yes'],['RNA','Yes'],['DNA','Yes']];
+
+var SC={
+intro:{ch:0,html:function(){return '<p class="tag">A story in four experiments</p><h1>The Transforming Principle</h1>'+
+  '<p class="clock">8:15 pm · the night before the quiz</p>'+
+  '<p>Tomorrow\'s quiz comes down to one question: how did scientists work out that DNA, and not protein, carries genetic information?</p>'+
+  '<p>You have your textbook, three experiments to get through, and an AI chatbot on your iPad.</p>'+
+  '<div class="meet">'+BOT+'<p><strong>Meet Strand.</strong> Strand is the name of the AI chatbot in this story. It answers your questions in chat bubbles like a study app would. The name has nothing to do with a strand of DNA.</p></div>'+
+  '<p class="note">You make the choices. Nothing is scored, and the story follows what you decide.</p>'+go('g1','Start with Griffith, 1928')}},
+
+g1:{ch:1,html:function(){return '<p class="tag">Griffith · 1928 · objective 1.5.1</p><h2>Four mice, two strains</h2>'+
+  '<p>The figure in your book shows four mice and two kinds of pneumonia bacteria, labelled S and R. You can never remember which is which.</p>'+
+  me('Which strain is the dangerous one, S or R?')+
+  ai('S. Its colonies look smooth because each cell has a capsule that hides it from the mouse\'s immune system. R colonies look rough, have no capsule, and are harmless.')+
+  '<div class="choices">'+ch(['g2','g=glance','Check it quickly against the figure in your book.'])+ch(['g2','g=over','Don\'t trust Strand. Check three websites first.'])+ch(['g2','g=blind','Accept Strand\'s answer without checking anything.'])+'</div>'}},
+
+g2:{ch:1,html:function(){var t={glance:['8:17 pm','Ten seconds. The caption under the figure says the same thing.'],
+  over:['8:43 pm','Three websites, two cookie banners and one video ad later, all three agree with Strand, and with the caption that was under your thumb the whole time. Three experiments still to go.'],
+  blind:['8:16 pm','It happens to be right. You don\'t know that yet.']}[S.log.g||'glance'];
+  return '<p class="tag">Griffith · 1928 · objective 1.5.1</p><p class="clock">'+t[0]+'</p><p>'+t[1]+'</p>'+
+  '<p>Griffith injected four groups of mice and recorded what happened.</p>'+
+  grif(false)+
+  '<p>What happens to mouse 4? Predict before you see the result.</p><div class="pair">'+ch(['g3','pred=lives','It lives'])+ch(['g3','pred=dies','It dies'])+'</div>'}},
+
+g3:{ch:1,html:function(){return '<p class="tag">Griffith · 1928 · objective 1.5.1</p><h2>Mouse 4 dies</h2>'+
+  '<p>'+(S.log.pred==='dies'?'You called it. Griffith did not expect it:':'You expected it to live. So did Griffith:')+' two harmless injections should add up to a harmless one. When he examined the mouse, he found <em>living</em> S bacteria.</p>'+grif(true)+
+  '<p>Which explanation fits the results of all four mice?</p><div class="choices">'+
+  '<button class="choice" data-probe="0">The heat-killed S bacteria came back to life.</button>'+
+  '<button class="choice" data-probe="1">Something passed from the dead S cells into the live R cells and changed them.</button>'+
+  '<button class="choice" data-probe="2">The R strain was harmful all along.</button></div><div id="out"></div>'},
+ bind:function(el){var r=['Mouse 3 got heat-killed S on its own and lived. Dead stayed dead. Try another.',
+  'Griffith called the change <strong>transformation</strong>, and the unknown something the <strong>transforming principle</strong>. The changed bacteria passed the trait on to their offspring, so whatever moved was carrying heritable information. He never found out what it was made of.',
+  'Mouse 2 got live R on its own and lived. Try another.'];
+  el.addEventListener('click',function(e){var b=e.target.closest('[data-probe]');if(!b)return;var i=+b.dataset.probe;
+   $('#out',el).innerHTML='<p class="reply">'+r[i]+'</p>'+(i===1?'<p style="margin-top:14px">'+go('a1','Next: Avery, 1944')+'</p>':'')})}},
+
+a1:{ch:2,html:function(){return '<p class="tag">Avery · 1944 · objective 1.5.2</p><h2>What was it made of?</h2>'+
+  '<p>'+(S.log.g==='blind'?'Strand was right last time. You stop reaching for the textbook.':'One down. You turn to the next page of notes.')+'</p>'+
+  me('What did Avery\'s team do, and what did they find?')+
+  ai('Avery, MacLeod and McCarty made an extract from heat-killed S bacteria. They treated samples of it with enzymes, each destroying one kind of molecule, then mixed each sample with live R bacteria.'+table(AVERY,true)+'<p style="margin-top:8px">Conclusion: DNA is the transforming principle.</p>')+
+  '<p>It looks tidy. Read the four results against the conclusion, then <strong>tap the one result that cannot be right</strong>.</p><div id="out"></div>'},
+ bind:function(el){el.addEventListener('click',function(e){var b=e.target.closest('[data-row]');if(!b)return;var i=+b.dataset.row,o=$('#out',el);
+  el.querySelectorAll('.row').forEach(function(x){x.classList.remove('hit')});
+  if(i<3){o.innerHTML='<p class="reply">The R cells still transformed with no '+AVERY[i][0].toLowerCase()+' present, so the information is not carried there. That fits the conclusion that DNA carries it. Tap a different result.</p>';return}
+  b.classList.add('hit');
+  o.innerHTML='<p class="reply">Strand shows the R cells still transforming after the DNA was destroyed. If that were true, DNA could not be the transforming principle. That result and the conclusion cannot both be true.</p><p style="margin:14px 0 10px">What now?</p><div class="choices">'+
+   ch(['a2','a=asked','Ask Strand: are you sure about the DNA result?'])+ch(['a3','a=logic','Work out for yourself what the DNA result should be.'])+ch(['a4','a=copied','It\'s late. Copy the results down as they are.'])+'</div>'})}},
+
+a2:{ch:2,html:function(){return '<p class="tag">Avery · 1944 · objective 1.5.2</p>'+me('Are you sure about the DNA result?')+
+  ai('You\'re right, I apologise for the confusion. Here are the corrected results.'+table([['Protein','No'],['Lipids and carbohydrates','Yes'],['RNA','Yes'],['DNA','Yes']])+'<p style="margin-top:8px">Conclusion: DNA is the transforming principle.</p>')+
+  '<p>It agreed with you instantly, then changed a different result. Now two of the four contradict the conclusion.</p><p>Strand changed its answer because you pushed. You still don\'t know what happened in that lab in 1944.</p>'+go('a3','Work it out yourself')}},
+
+a4:{ch:2,html:function(){return '<p class="tag">Avery · 1944 · objective 1.5.2</p><p class="clock">7:40 am · the next morning</p>'+
+  '<p>Salma looks over your shoulder before class. "Your DNA dish shows S colonies. Mine has none."</p><p>You both stare at the two notebooks. Staring does not settle whose is right.</p>'+go('a3','Work it out together')}},
+
+a3:{ch:2,html:function(){return '<p class="tag">Avery · 1944 · objective 1.5.2</p><h2>Reason it through</h2>'+
+  '<p>Complete the two sentences.</p><p class="logic">If a molecule carries the genetic information, destroying that molecule should <select id="l1" aria-label="Effect on transformation"><option value="">choose</option><option value="x">have no effect on</option><option value="ok">stop</option></select> transformation.</p><p class="logic">Strand\'s conclusion says that molecule is DNA. So in the sample where DNA was destroyed, the result should be <select id="l2" aria-label="Result when DNA is destroyed"><option value="">choose</option><option value="x">R cells transformed into S</option><option value="ok">no transformation</option></select>.</p>'+
+  '<button class="go" id="chk">Check my reasoning</button><div id="out"></div>'},
+ bind:function(el){$('#chk',el).addEventListener('click',function(){var ok=['l1','l2'].every(function(i){return $('#'+i,el).value==='ok'}),o=$('#out',el);
+  if(!ok){o.innerHTML='<p class="reply">Not yet. If the instructions are destroyed before they reach the R cells, can the R cells still be changed?</p>';return}
+  o.innerHTML='<p>You open the textbook. It agrees with you: only the enzyme that destroyed DNA stopped transformation.</p>'+table([['Protein','Yes'],['Lipids and carbohydrates','Yes'],['RNA','Yes'],['DNA','No']])+'<p style="margin-top:16px">'+go('h1','Next: Hershey and Chase, 1952')+'</p>'})}},
+
+h1:{ch:3,html:function(){return '<p class="tag">Hershey and Chase · 1952 · objective 1.5.3</p><h2>The model is due tomorrow</h2>'+
+  '<p>Avery did not convince everyone. Many scientists still expected protein to be the answer. Your homework is a visual model of the experiment that settled it.</p>'+
+  '<p>Hershey and Chase used bacteriophages: viruses that are little more than a protein coat with DNA inside. A phage infects a bacterium, and new phages come out. Something has to go in carrying the instructions.</p>'+
+  ai('I can generate the finished diagram for you, labels and all. Ten seconds.')+
+  '<div class="choices">'+ch(['h2','h=generated','Do it. Generate the diagram.'])+ch(['h3','h=built','No. I\'ll build it. Give me a hint if I get stuck.'])+'</div>'}},
+
+h2:{ch:3,html:function(){return '<p class="tag">Hershey and Chase · 1952 · objective 1.5.3</p>'+
+  '<p>It looks professional. You paste it into your notes and send Salma a photo.</p><p>She replies in a minute: "Why is sulfur on the coat and phosphorus on the DNA? Why not the other way round?"</p>'+hc('coat','var(--s35)','liquid','Sulfur-35')+hc('dna','var(--p32)','cells','Phosphorus-32')+'<p>You look at the diagram. The diagram does not say.</p>'+go('h3','Open a blank model and build it')}},
+
+h3:{ch:3,html:function(){return '<p class="tag">Hershey and Chase · 1952 · objective 1.5.3</p><h2>Build the model</h2>'+
+  '<p>They grew two batches of phages, each with a different radioactive atom, so each molecule could be followed. The drawing is one phage: the outline is its protein coat and the squiggle is its DNA. Choose which part each radioactive atom marks.</p>'+
+  '<div class="bench"><svg id="phage" viewBox="0 0 120 150" role="img" aria-label="Bacteriophage: protein coat with DNA inside" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">'+
+  '<g id="coat"><polygon points="60,10 95,30 95,70 60,90 25,70 25,30"/><line x1="60" y1="90" x2="60" y2="125"/><line x1="60" y1="125" x2="38" y2="145"/><line x1="60" y1="125" x2="82" y2="145"/></g>'+
+  '<path id="dna" d="M48 30 C74 36 46 48 72 54 C46 60 74 68 52 74"/></svg>'+
+  '<div class="labels"><div><p class="s35">Sulfur-35 marks the</p><div class="seg" data-tag="s"><button data-v="coat">protein coat</button><button data-v="dna">DNA</button></div></div>'+
+  '<div><p class="p32">Phosphorus-32 marks the</p><div class="seg" data-tag="p"><button data-v="coat">protein coat</button><button data-v="dna">DNA</button></div></div></div></div>'+
+  '<button class="quiet" id="hint">Ask Strand for a hint</button><div id="hintout"></div>'+
+  '<p>Each batch infects bacteria. A blender shakes the coats loose and a centrifuge spins the bacteria to the bottom. Predict where the radioactivity ends up.</p>'+
+  '<div class="labels"><div><p class="s35">Sulfur-35 batch: radioactivity is found</p><div class="seg" data-tag="ps"><button data-v="liquid">in the liquid</button><button data-v="cells">inside the bacteria</button></div></div>'+
+  '<div><p class="p32">Phosphorus-32 batch: radioactivity is found</p><div class="seg" data-tag="pp"><button data-v="liquid">in the liquid</button><button data-v="cells">inside the bacteria</button></div></div></div>'+
+  '<button class="go" id="run">Infect, blend and spin</button><div id="out"></div>'},
+ bind:function(el){
+  function paint(){var col=function(part){return S.b.s===part?'var(--s35)':S.b.p===part?'var(--p32)':'var(--muted)'};
+   $('#coat',el).style.stroke=col('coat');$('#dna',el).style.stroke=col('dna');
+   el.querySelectorAll('.seg').forEach(function(g){g.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',String(S.b[g.dataset.tag]===b.dataset.v))})})}
+  paint();
+  el.addEventListener('click',function(e){var b=e.target.closest('.seg button');if(b){S.b[b.parentNode.dataset.tag]=b.dataset.v;save();paint();$('#out',el).innerHTML='';return}
+   if(e.target.id==='hint'){S.log.hint='1';$('#hintout',el).innerHTML=ai('Proteins contain sulfur but almost no phosphorus. DNA contains phosphorus and no sulfur.');return}
+   if(e.target.id==='run'){var o=$('#out',el),m=[];
+    if(!S.b.s||!S.b.p||!S.b.ps||!S.b.pp){o.innerHTML='<p class="reply">Answer all four choices above first: two for the atoms, two for your predictions.</p>';return}
+    if(S.b.s==='dna')m.push('Sulfur-35 had nothing to attach to. DNA contains no sulfur.');
+    if(S.b.p==='coat')m.push('Phosphorus-32 barely marked the coat. Protein contains almost no phosphorus.');
+    if(m.length){o.innerHTML='<p class="reply">'+m.join(' ')+' There is nothing clear to track. Change which part each atom marks and run it again.</p>';return}
+    var hit=S.b.ps==='liquid'&&S.b.pp==='cells';S.log.hp=hit?'1':'0';o.innerHTML=hc('coat','var(--s35)','liquid','Sulfur-35')+hc('dna','var(--p32)','cells','Phosphorus-32')+'<p style="margin:12px 0">'+(hit?'Both of your predictions match the result.':'Compare this with your predictions. The sulfur-35 on the coat stayed outside in the liquid. The phosphorus-32 in the DNA went inside the bacteria.')+'</p>'+go('h4','Add captions')}})}},
+
+h4:{ch:3,html:function(){var c=['A phage works like a syringe: the coat stays outside and the DNA is injected.','The whole virus enters the bacterium and reproduces inside it.','The radioactive atom found inside the bacteria shows which molecule carried the instructions.'];
+  return '<p class="tag">Hershey and Chase · 1952 · objective 1.5.3</p><h2>Finish the model</h2>'+
+  ai('Nice model. Here are three captions you could add. Tick the ones that match your result and leave out any that don\'t.')+
+  '<div class="caps">'+c.map(function(t,i){return '<label><input type="checkbox" id="cap'+i+'" value="'+i+'"'+(S.caps.indexOf(i)>-1?' checked':'')+'><span>'+t+'</span></label>'}).join('')+'</div>'+
+  '<button class="go" id="add">Add the ticked captions</button><div id="out"></div>'},
+ bind:function(el){$('#add',el).addEventListener('click',function(){var o=$('#out',el);
+  S.caps=[0,1,2].filter(function(i){return $('#cap'+i,el).checked});save();
+  if(!S.caps.length){o.innerHTML='<p class="reply">A model with no caption explains nothing. Keep at least one.</p>';return}
+  if(S.caps.indexOf(1)>-1){o.innerHTML='<p class="reply">Look at your own model. Sulfur-35, which marks the coat, stayed outside in the liquid. The second caption says the coat went in.</p>';return}
+  o.innerHTML='<p>DNA went in, and new phages came out. The instructions were in the DNA. Your model says so, and you can say why each radioactive atom marks the part it does.</p><p style="margin-top:14px">'+go('w1','Last part: your answer')+'</p>'})}},
+
+w1:{ch:4,html:function(){return '<p class="tag">Tonight · the quiz question</p><h2>One question left</h2>'+
+  '<blockquote>How did scientists determine that DNA, and not proteins or other molecules, stores and transfers the genetic information responsible for inherited traits?</blockquote>'+
+  ai('I can write you a full-mark answer to that. Want it?')+
+  '<div class="choices">'+ch(['w2','w=ai','Yes. Write it for me.'])+ch(['w3','w=check','No. I\'ll write it, then you look for gaps.'])+ch(['w3','w=own','No AI for this one.'])+'</div>'}},
+
+w2:{ch:4,html:function(){return '<p class="tag">Tonight · the quiz question</p><p>Strand\'s paragraph is flawless. You read it twice and go to bed.</p>'+
+  '<p class="clock">9:05 am · Biology</p><p>Your teacher skips the written question and asks you out loud: "Why did Avery\'s team destroy RNA as well as protein?"</p>'+
+  '<p>The paragraph did not cover that. You know the words in it. You do not know the experiment.</p>'+go('w3','Go back to last night and write it yourself')}},
+
+w3:{ch:4,html:function(){var q=['Griffith: I explained what the result for mouse 4 showed.','Avery: I named the one molecule that stopped transformation when it was destroyed.','Hershey and Chase: I said which radioactive atom ended up inside the bacteria.'];
+  return '<p class="tag">Tonight · the quiz question</p><h2>In your own words</h2>'+
+  '<blockquote>How did scientists determine that DNA, and not proteins or other molecules, stores and transfers genetic information?</blockquote>'+
+  '<details><summary>Look at the evidence again</summary><div>'+grif(true)+table([['Protein','Yes'],['RNA','Yes'],['DNA','No']])+hc('coat','var(--s35)','liquid','Sulfur-35')+hc('dna','var(--p32)','cells','Phosphorus-32')+'</div></details>'+
+  '<label class="field"><span>Your answer, using evidence from all three experiments</span><textarea id="ans"></textarea></label>'+
+  (S.log.w==='check'?ai('I won\'t rewrite it. Check your answer against these three points. Tick each one it includes and fix any gap.'):'<p class="note">Check your answer against these three points. Tick each one it includes.</p>')+
+  '<div class="checks">'+q.map(function(t,i){return '<label><input type="checkbox" id="ck'+i+'"'+(S.checks.indexOf(i)>-1?' checked':'')+'><span>'+t+'</span></label>'}).join('')+'</div>'+
+  '<button class="go" id="fin">Finish</button><div id="out"></div>'},
+ bind:function(el){var a=$('#ans',el);a.value=S.ans;a.addEventListener('input',function(){S.ans=a.value;save()});
+  el.addEventListener('change',function(){S.checks=[0,1,2].filter(function(i){return $('#ck'+i,el).checked});save()});
+  $('#fin',el).addEventListener('click',function(){if(S.ans.trim().length<40){$('#out',el).innerHTML='<p class="reply">Write your answer first. Three sentences, one per experiment, is enough.</p>';return}show('end')})}},
+
+end:{ch:5,html:function(){var r=rows();
+  return '<p class="tag">Your record</p><h2>What you did with an AI helper tonight</h2>'+
+  '<dl class="record">'+r.map(function(x){return '<div><dt>'+x[0]+'</dt><dd>'+x[1]+'</dd></div>'}).join('')+'</dl>'+
+  '<div class="field"><span>Your answer</span><p class="own" id="own"></p></div>'+
+  '<label class="field"><span>Your name</span><input type="text" id="nm" autocomplete="off"></label>'+
+  '<label class="field"><span>One time this week I should question an AI answer is when…</span><textarea id="rf" style="min-height:5rem"></textarea></label>'+
+  '<button class="go" id="copy">Copy my record</button><p class="note" id="copied">Paste it wherever your teacher asks you to hand it in.</p>'+
+  '<textarea id="plain" readonly hidden style="min-height:8rem" aria-label="Your record as text"></textarea>'+
+  '<button class="quiet" id="again">Start again</button>'},
+ bind:function(el){$('#own',el).textContent=S.ans;var n=$('#nm',el),f=$('#rf',el);n.value=S.name;f.value=S.reflect;
+  n.addEventListener('input',function(){S.name=n.value;save()});f.addEventListener('input',function(){S.reflect=f.value;save()});
+  $('#copy',el).addEventListener('click',function(){var t='The Transforming Principle (BIO50A 1.5)\nName: '+S.name+'\n\n'+rows().map(function(x){return x[0]+': '+x[1]}).join('\n')+'\n\nMy answer:\n'+S.ans+'\n\nI should question an AI answer when: '+S.reflect;
+   var done=function(){$('#copied',el).textContent='Copied. Paste it wherever your teacher asks you to hand it in.'};
+   var fb=function(){var p=$('#plain',el);p.hidden=false;p.value=t;p.focus();p.select();$('#copied',el).textContent='Select the text below and copy it.'};
+   try{navigator.clipboard.writeText(t).then(done,fb)}catch(e){fb()}});
+  $('#again',el).addEventListener('click',function(){S={scene:'intro',log:{},b:{s:null,p:null,ps:null,pp:null},caps:[],ans:'',name:'',reflect:'',checks:[]};show('intro')})}}
+};
+
+function rows(){var L=S.log;return [
+ ['Trust',{glance:'Checked a simple fact against the book in ten seconds, then trusted it.',over:'Spent 26 minutes proving a fact the caption already confirmed.',blind:'Trusted a fact without looking. It was right, this time.'}[L.g]||''],
+ ['Question',{asked:'Asked the AI if it was sure. It agreed and made the results worse. Then reasoned it out.',logic:'Spotted the contradiction and reasoned it out from the experiment.',copied:'Copied a wrong result. Sorted it out with Salma the next morning.'}[L.a]||''],
+ ['Create',({generated:'Let the AI draw it, could not explain it, then built the model.',built:'Built the model and chose which AI captions to keep.'}[L.h]||'')+(L.hint?' Used one hint.':'')+(L.hp==='1'?' Predicted both results.':'')],
+ ['Think for yourself',{ai:'Let the AI write the answer, got stuck on a follow-up question, then wrote it.',check:'Wrote the answer, then used the AI\'s questions to find gaps.',own:'Wrote the answer with no AI.'}[L.w]||'']]}
+
+function show(id){if(!SC[id])id='intro';S.scene=id;save();var sc=SC[id],st=$('#stage'),fresh=st.cloneNode(false);
+  st.parentNode.replaceChild(fresh,st);fresh.innerHTML=sc.html();if(sc.bind)sc.bind(fresh);
+  document.querySelectorAll('#steps li').forEach(function(li,i){li.className=i+1<sc.ch?'done':i+1===sc.ch?'now':'';if(i+1===sc.ch)li.setAttribute('aria-current','step');else li.removeAttribute('aria-current')});
+  fresh.addEventListener('click',function(e){var b=e.target.closest('[data-go]');if(!b)return;var kv=(b.dataset.set||'').split('=');if(kv[0])S.log[kv[0]]=kv[1];show(b.dataset.go)});
+  if(started){fresh.focus({preventScroll:true});window.scrollTo(0,0)}started=true}
+document.getElementById('reset').addEventListener('click',function(){S={scene:'intro',log:{},b:{s:null,p:null,ps:null,pp:null},caps:[],ans:'',name:'',reflect:'',checks:[]};show('intro')});
+var started=false;
+load();show(S.scene);
+</script>
+
+</body></html>
